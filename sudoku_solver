@@ -1,0 +1,84 @@
+# First import the necessary modules:
+import numpy as np
+
+# Then define the sudoku grid as an array. Use zeros to represent blank squares
+
+sudoku = np.array([
+    [1, 0, 0, 0, 0, 0, 0, 3, 0],
+    [0, 0, 9, 0, 0, 2, 0, 6, 0],
+    [0, 0, 8, 5, 6, 0, 0, 0, 0],
+    [0, 0, 0, 7, 0, 0, 1, 4, 0],
+    [5, 0, 0, 0, 4, 0, 0, 0, 3],
+    [0, 4, 3, 0, 0, 6, 0, 0, 0],
+    [0, 0, 0, 0, 1, 8, 7, 0, 0],
+    [0, 1, 0, 9, 0, 0, 6, 0, 0],
+    [0, 9, 0, 0, 0, 0, 0, 0, 2]
+])
+
+# print(sudoku_grid)
+
+# Then define some parameters and functions that will come in useful later:
+
+side_length = len(sudoku)
+# print(side_length)
+
+# This function will print the sudoku in a format that is easy to read
+def print_sudoku(sudoku=sudoku):
+    for i in sudoku:
+        print(i)
+# print_sudoku()
+
+# This function will check if the sudoku is complete:
+def check_sudoku(sudoku=sudoku):
+    filled_in = True
+    for i in range(0, side_length):
+        for j in range(0, side_length):
+            if sudoku[i][j] == 0:
+                row = i
+                col = j
+                filled_in = False
+                check_sqr = [row, col, filled_in]
+                return check_sqr
+    check_sqr = ['n/a', 'n/a', filled_in]
+    return check_sqr
+
+# This function will check if we can put a number in a given square
+def check_square(n, row, col):
+    for i in range(0, side_length):
+        if sudoku[row][i] == n:
+            return False
+    for i in range(0, side_length):
+        if sudoku[i][col] == n:
+            return False
+    first_sqr_row = (row // 3) * 3
+    first_sqr_col = (col // 3) * 3
+    for i in range(first_sqr_row, first_sqr_row + 3):
+        for j in range(first_sqr_col, first_sqr_col + 3):
+            if sudoku[i][j] == n:
+                return False
+    return True
+
+# This function will use the other functions to solve the sudoku
+def solve_sudoku(sudoku=sudoku):
+    check = check_sudoku()
+    if check[2]:
+        return True
+    row = check[0]
+    col = check[1]
+    for i in range(1, 10):
+        if check_square(i, row, col):
+            sudoku[row][col] = i
+            if solve_sudoku():
+                return True
+            else:
+                sudoku[row][col] = 0
+    return False
+
+
+# Now we simply run the solve_sudoku function and if our soduku is complete we print it
+if solve_sudoku():
+    print_sudoku()
+else:
+    print("No Solution")
+
+# This is the end of the program
